@@ -4,46 +4,78 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
-    <title>Hobilerim & Harita</title>
+    <title>Çalışma Alanları & Harita</title>
 </head>
 <body>
     <nav>
         <a href="index.html">Hakkımda</a>
-        <a href="hobiler.html">Hobilerim & Harita</a>
+        <a href="hobiler.html">Çalışma Alanları & Harita</a>
         <a href="iletisim.html">İletişim</a>
     </nav>
     
     <div class="animasyon-kutu">
-        <h1>Hobilerim</h1>
+        <h1>Hobilerim ve İlgi Alanlarım</h1>
         <ul>
             <li>Satranç</li>
-            <li>Klasik Müzik</li>
-            <li>Jazz Müzik</li>
+            <li>Klasik Müzik ve Jazz Müzik</li>
+            <li>Golf Oynamak</li>
+            <li>Cirit Atmak</li>
         </ul>
 
-        <h2>Seyahat Ettiğim İller</h2>
-        <div id="map" style="height: 500px;"></div>
+        <h2>İş ve Seyahat Amacıyla Bulunduğum İller</h2>
+        <p>Aşağıdaki haritada, siperlerdeki görevlerim kapsamında bulunduğum iller ile kişisel seyahatlerimde keşfettiğim iller farklı renklerde gösterilmiştir.</p>
+        <div id="map" style="height: 550px;"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Haritayı Türkiye'yi ortalayacak şekilde başlatıyoruz
         var map = L.map('map').setView([39.0, 35.0], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         
-        // Tüm şehirlerin koordinatlarıyla tam listesi
-        var noktalar = [
-            ["Bursa", 40.18, 29.06], ["İstanbul", 41.00, 28.97], ["Ankara", 39.93, 32.85], 
-            ["Kastamonu", 41.38, 33.78], ["Ardahan", 41.11, 42.70], ["Kars", 40.60, 43.09], 
-            ["Erzurum", 39.90, 41.27], ["Ordu", 40.98, 37.87], ["Bartın", 41.63, 32.33], 
-            ["Karabük", 41.20, 32.62], ["Yalova", 40.65, 29.26], ["Kahramanmaraş", 37.57, 36.93], 
-            ["Gaziantep", 37.06, 37.38], ["Adana", 37.00, 35.32], ["Samsun", 41.28, 36.33], 
-            ["Bolu", 40.73, 31.60], ["Çanakkale", 40.15, 26.41], ["İzmir", 38.42, 27.13], 
-            ["Manisa", 38.62, 27.43], ["Nevşehir", 38.62, 34.71], ["Sinop", 42.02, 35.15], 
-            ["Çankırı", 40.60, 33.61], ["Düzce", 40.84, 31.16], ["Antalya", 36.89, 30.71]
-        ];
-        
-        noktalar.forEach(n => L.marker([n[1], n[2]]).addTo(map).bindPopup(n[0]));
+        // İlleri iki ayrı kategoriye ayırdık
+        var calismaIlleri = ["Ankara", "Kastamonu", "Ardahan", "Kars", "Erzurum", "Çankırı"];
+        var seyahatIlleri = ["Çanakkale", "İzmir", "Manisa", "Nevşehir", "Bursa", "İstanbul", "Ordu", "Bartın", "Karabük", "Yalova", "Kahramanmaraş", "Gaziantep", "Adana", "Samsun", "Bolu", "Sinop", "Düzce", "Antalya"];
+
+        // Türkiye GeoJSON verisi çekiliyor
+        fetch('https://raw.githubusercontent.com/alpers/Turkey-Maps-GeoJSON/master/tr-cities.json')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        var ilAdi = feature.properties.name;
+                        
+                        if(calismaIlleri.includes(ilAdi)) {
+                            // Çalışma illeri için Kırmızı tonları
+                            return { color: "#c0392b", weight: 2, fillColor: "#e74c3c", fillOpacity: 0.6 };
+                        } else if(seyahatIlleri.includes(ilAdi)) {
+                            // Seyahat illeri için Mavi tonları
+                            return { color: "#2980b9", weight: 2, fillColor: "#3498db", fillOpacity: 0.6 };
+                        } else {
+                            // Diğer iller transparan/gri
+                            return { color: "#cccccc", weight: 1, fillColor: "transparent", fillOpacity: 0 };
+                        }
+                    },
+                    onEachFeature: function(feature, layer) {
+                        var ilAdi = feature.properties.name;
+                        if(calismaIlleri.includes(ilAdi)) {
+                            layer.bindPopup("<b>" + ilAdi + "</b><br>Görev/Çalışma amacıyla bulunuldu.");
+                        } else if(seyahatIlleri.includes(ilAdi)) {
+                            layer.bindPopup("<b>" + ilAdi + "</b><br>Seyahat amacıyla bulunuldu.");
+                        }
+                    }
+                }).addTo(map);
+            });
+
+        // Haritaya Lejant (Gösterge) Eklenmesi
+        var legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML += '<h4>Harita Lejantı</h4>';
+            div.innerHTML += '<i style="background: #e74c3c"></i> Çalışma / Görev<br>';
+            div.innerHTML += '<i style="background: #3498db"></i> Seyahat / Gezi<br>';
+            return div;
+        };
+        legend.addTo(map);
     </script>
 </body>
 </html>
