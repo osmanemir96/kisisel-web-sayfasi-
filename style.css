@@ -82,11 +82,13 @@ ul li {
     font-size: 1.1em;
 }
 
-#map { 
+/* Her iki harita için de şık çerçeve ve gölge ayarı */
+#map, #contact-map { 
     border: 1px solid rgba(255, 255, 255, 0.1); 
     border-radius: 12px; 
     margin-top: 25px; 
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    z-index: 1;
 }
 
 .iletisim-listesi p { 
@@ -101,32 +103,15 @@ ul li {
 
 .iletisim-listesi strong { color: #ffffff; }
 
-.info.legend {
-    background: rgba(15, 23, 42, 0.9); 
-    backdrop-filter: blur(5px);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    line-height: 24px;
-    color: #f1f5f9;
-    font-family: 'Montserrat', sans-serif;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+/* Haritadaki Menü ve Lejant İçin Koyu Tema Ayarları */
+.leaflet-control-layers { 
+    background: rgba(15, 23, 42, 0.9) !important; 
+    color: #f1f5f9 !important; 
+    border: 1px solid rgba(255,255,255,0.1) !important; 
+    border-radius: 8px !important; 
+    padding: 5px; 
 }
-
-.info.legend h4 {
-    margin: 0 0 10px 0;
-    color: #ffffff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 5px;
-    font-size: 1em;
-}
-
-.info.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 10px;
-    margin-top: 3px;
-    opacity: 0.9;
-    border-radius: 4px;
+.leaflet-control-layers-expanded { 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: 0.9em; 
 }
