@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
     <title>Çalışma Alanları & Harita</title>
@@ -22,57 +23,52 @@
             <li>Cirit Atmak</li>
         </ul>
 
-        <h2>İş ve Seyahat Amacıyla Bulunduğum İller</h2>
-        <p>Aşağıdaki haritada, siperlerdeki görevlerim kapsamında bulunduğum iller ile kişisel seyahatlerimde keşfettiğim iller farklı renklerde gösterilmiştir.</p>
+        <h2>Bulunduğum İller</h2>
+        <p>Aşağıdaki haritada iş ve seyahat amacıyla bulunduğum iller renklendirilerek gösterilmiştir.</p>
         <div id="map" style="height: 550px;"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([39.0, 35.0], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
         
-        // İlleri iki ayrı kategoriye ayırdık
-        var calismaIlleri = ["Ankara", "Kastamonu", "Ardahan", "Kars", "Erzurum", "Çankırı"];
-        var seyahatIlleri = ["Çanakkale", "İzmir", "Manisa", "Nevşehir", "Bursa", "İstanbul", "Ordu", "Bartın", "Karabük", "Yalova", "Kahramanmaraş", "Gaziantep", "Adana", "Samsun", "Bolu", "Sinop", "Düzce", "Antalya"];
+        var bulundugumIller = [
+            "İstanbul", "Erzurum", "İzmir", "Manisa", "Antalya", 
+            "Ankara", "Çanakkale", "Nevşehir", "Bursa", "Kastamonu", 
+            "Ardahan", "Kars", "Ordu", "Bartın", "Karabük", "Yalova", 
+            "Kahramanmaraş", "Gaziantep", "Adana", "Samsun", "Bolu", 
+            "Sinop", "Çankırı", "Düzce", "Zonguldak"
+        ];
 
-        // Türkiye GeoJSON verisi çekiliyor
         fetch('https://raw.githubusercontent.com/alpers/Turkey-Maps-GeoJSON/master/tr-cities.json')
             .then(response => response.json())
             .then(data => {
                 L.geoJSON(data, {
                     style: function(feature) {
                         var ilAdi = feature.properties.name;
-                        
-                        if(calismaIlleri.includes(ilAdi)) {
-                            // Çalışma illeri için Kırmızı tonları
-                            return { color: "#c0392b", weight: 2, fillColor: "#e74c3c", fillOpacity: 0.6 };
-                        } else if(seyahatIlleri.includes(ilAdi)) {
-                            // Seyahat illeri için Mavi tonları
+                        if(bulundugumIller.includes(ilAdi)) {
                             return { color: "#2980b9", weight: 2, fillColor: "#3498db", fillOpacity: 0.6 };
                         } else {
-                            // Diğer iller transparan/gri
                             return { color: "#cccccc", weight: 1, fillColor: "transparent", fillOpacity: 0 };
                         }
                     },
                     onEachFeature: function(feature, layer) {
                         var ilAdi = feature.properties.name;
-                        if(calismaIlleri.includes(ilAdi)) {
-                            layer.bindPopup("<b>" + ilAdi + "</b><br>Görev/Çalışma amacıyla bulunuldu.");
-                        } else if(seyahatIlleri.includes(ilAdi)) {
-                            layer.bindPopup("<b>" + ilAdi + "</b><br>Seyahat amacıyla bulunuldu.");
+                        if(bulundugumIller.includes(ilAdi)) {
+                            layer.bindPopup("<b>" + ilAdi + "</b>");
                         }
                     }
                 }).addTo(map);
             });
 
-        // Haritaya Lejant (Gösterge) Eklenmesi
         var legend = L.control({position: 'bottomright'});
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'info legend');
             div.innerHTML += '<h4>Harita Lejantı</h4>';
-            div.innerHTML += '<i style="background: #e74c3c"></i> Çalışma / Görev<br>';
-            div.innerHTML += '<i style="background: #3498db"></i> Seyahat / Gezi<br>';
+            div.innerHTML += '<i style="background: #3498db"></i> Bulunulan İller<br>';
             return div;
         };
         legend.addTo(map);
