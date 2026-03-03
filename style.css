@@ -1,6 +1,25 @@
-body { background-color: #1a1a2e; color: #e6e6e6; font-family: sans-serif; padding: 30px; }
-nav { background-color: #16213e; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-bottom: 3px solid #4ecca3; }
-nav a { color: #4ecca3; margin-right: 20px; text-decoration: none; font-weight: bold; }
-.animasyon-kutu { background-color: #0f3460; padding: 20px; border-radius: 10px; animation: fadeIn 1.5s; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-#map { border: 3px solid #4ecca3; border-radius: 10px; }
+/* Harita Lejantı (Gösterge) Tasarımı */
+.info.legend {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    line-height: 24px;
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+}
+.info.legend h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.info.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 10px;
+    margin-top: 3px;
+    opacity: 0.8;
+    border-radius: 3px;
+}
