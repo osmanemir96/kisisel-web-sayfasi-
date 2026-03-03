@@ -30,13 +30,14 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var contactMap = L.map('contact-map').setView([39.9084, 32.7661], 15);
+        // Bakanlık konumu gerçek yerine (39.9109, 32.7517) taşındı
+        var contactMap = L.map('contact-map').setView([39.9109, 32.7517], 15);
         
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(contactMap);
 
-        L.marker([39.9084, 32.7661]).addTo(contactMap)
+        L.marker([39.9109, 32.7517]).addTo(contactMap)
          .bindPopup("<b style='color:#0f172a;'>🏢 Çevre, Şehircilik ve İklim Değişikliği Bakanlığı</b>")
          .openPopup();
     </script>
