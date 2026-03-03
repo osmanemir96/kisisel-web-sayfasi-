@@ -5,36 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
-    <title>Çalışma Alanları & Harita</title>
+    <title>Çalışma Ağım & Harita</title>
 </head>
 <body>
     <nav>
         <a href="index.html">Hakkımda</a>
-        <a href="hobiler.html">Çalışma Alanları & Harita</a>
+        <a href="hobiler.html">Çalışma Ağım & Harita</a>
         <a href="iletisim.html">İletişim</a>
     </nav>
     
     <div class="animasyon-kutu">
         <h1>Hobilerim ve İlgi Alanlarım</h1>
         <ul>
-            <li>Satranç</li>
-            <li>Klasik Müzik ve Jazz Müzik</li>
-            <li>Golf Oynamak</li>
-            <li>Cirit Atmak</li>
+            <li>♟️ Satranç</li>
+            <li>🎻 Klasik Müzik ve 🎷 Jazz Müzik</li>
+            <li>⛳ Golf Oynamak</li>
+            <li>🎯 Cirit Atmak</li>
         </ul>
 
-        <h2>Bulunduğum İller</h2>
-        <p>Aşağıdaki haritada iş ve seyahat amacıyla bulunduğum iller renklendirilerek gösterilmiştir.</p>
+        <h2>🗺️ Kişisel Ağım ve Bulunduğum İller</h2>
+        <p>Aşağıdaki haritada eğitim ve çalışma hayatımdaki kilit noktaları (ODTÜ, Hacettepe, Bakanlık) ve bulunduğum illeri görebilirsiniz.</p>
         <div id="map" style="height: 550px;"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').setView([39.0, 35.0], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+        // Haritayı Ankara merkezli başlatıyoruz
+        var map = L.map('map').setView([39.9, 32.8], 6);
+        
+        // Koyu tasarıma özel Dark Mode harita altlığı
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(map);
         
+        // ÖZEL NOKTALAR (Eğitim ve İş - Personal Network Map Konsepti)
+        var ozelNoktalar = [
+            { ad: "ODTÜ (Lisans Eğitimi)", lat: 39.8914, lon: 32.7846, ikon: "🎓" },
+            { ad: "Hacettepe Üni. (Yüksek Lisans)", lat: 39.8686, lon: 32.7344, ikon: "🎓" },
+            { ad: "Çevre, Şehircilik ve İklim Değişikliği Bakanlığı (İş)", lat: 39.9084, lon: 32.7661, ikon: "🏢" }
+        ];
+
+        ozelNoktalar.forEach(function(nokta) {
+            L.marker([nokta.lat, nokta.lon]).addTo(map)
+             .bindPopup("<b style='color:#0f172a; font-size: 14px;'>" + nokta.ikon + " " + nokta.ad + "</b>");
+        });
+
+        // BULUNULAN İLLER (GeoJSON Poligonları)
         var bulundugumIller = [
             "İstanbul", "Erzurum", "İzmir", "Manisa", "Antalya", 
             "Ankara", "Çanakkale", "Nevşehir", "Bursa", "Kastamonu", 
@@ -50,25 +66,27 @@
                     style: function(feature) {
                         var ilAdi = feature.properties.name;
                         if(bulundugumIller.includes(ilAdi)) {
-                            return { color: "#2980b9", weight: 2, fillColor: "#3498db", fillOpacity: 0.6 };
+                            return { color: "#38bdf8", weight: 2, fillColor: "#0ea5e9", fillOpacity: 0.3 };
                         } else {
-                            return { color: "#cccccc", weight: 1, fillColor: "transparent", fillOpacity: 0 };
+                            return { color: "#475569", weight: 1, fillColor: "transparent", fillOpacity: 0 };
                         }
                     },
                     onEachFeature: function(feature, layer) {
                         var ilAdi = feature.properties.name;
                         if(bulundugumIller.includes(ilAdi)) {
-                            layer.bindPopup("<b>" + ilAdi + "</b>");
+                            layer.bindPopup("<b style='color:#0f172a'>" + ilAdi + "</b>");
                         }
                     }
                 }).addTo(map);
             });
 
+        // Harita Lejantı
         var legend = L.control({position: 'bottomright'});
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML += '<h4>Harita Lejantı</h4>';
-            div.innerHTML += '<i style="background: #3498db"></i> Bulunulan İller<br>';
+            div.innerHTML += '<h4>Harita Göstergesi</h4>';
+            div.innerHTML += '<i style="background: #0ea5e9; opacity: 0.5;"></i> Bulunulan İller<br>';
+            div.innerHTML += '<i style="background: white; border: 2px solid #38bdf8; border-radius: 50%; width: 12px; height: 12px; display: inline-block; margin-right: 12px; margin-top: 5px;"></i> Kurum / Eğitim<br>';
             return div;
         };
         legend.addTo(map);
