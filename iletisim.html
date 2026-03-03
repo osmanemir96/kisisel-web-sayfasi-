@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
     <title>İletişim | Osman Emir Doğrusoy</title>
 </head>
@@ -22,6 +23,22 @@
             <p>🏠 <strong>Adres:</strong> Batıkent / Ankara</p>
             <p>🏢 <strong>İş Adresi:</strong> Çevre, Şehircilik ve İklim Değişikliği Bakanlığı Binası, Ankara</p>
         </div>
+
+        <h2>📍 Konum (Bakanlık)</h2>
+        <div id="contact-map" style="height: 350px;"></div>
     </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var contactMap = L.map('contact-map').setView([39.9084, 32.7661], 15);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        }).addTo(contactMap);
+
+        L.marker([39.9084, 32.7661]).addTo(contactMap)
+         .bindPopup("<b style='color:#0f172a;'>🏢 Çevre, Şehircilik ve İklim Değişikliği Bakanlığı</b>")
+         .openPopup();
+    </script>
 </body>
 </html>
