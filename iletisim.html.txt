@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>İletişim</title>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Hakkımda</a>
+        <a href="hobiler.html">Hobilerim & Harita</a>
+        <a href="iletisim.html">İletişim</a>
+    </nav>
+    <div class="animasyon-kutu">
+        <h1>İletişim</h1>
+        <p>Ankara, Batıkent</p>
+    </div>
+</body>
+</html>

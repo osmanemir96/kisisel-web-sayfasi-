@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html">Hakkımda</a>
+        <a href="hobiler.html">Hobilerim & Harita</a>
+        <a href="iletisim.html">İletişim</a>
+    </nav>
+    <h1>Hobilerim</h1>
+    <ul><li>Satranç</li><li>Klasik Müzik</li><li>Jazz Müzik</li></ul>
+    <div id="map" style="height: 500px;"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([39.9, 32.8], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        var noktalar = [["Bursa", 40.18, 29.06], ["İstanbul", 41.00, 28.97], ["Ankara", 39.93, 32.85], ["Kastamonu", 41.38, 33.78], ["Ardahan", 41.11, 42.70], ["Kars", 40.60, 43.09], ["Erzurum", 39.90, 41.27], ["Ordu", 40.98, 37.87], ["Bartın", 41.63, 32.33], ["Karabük", 41.20, 32.62], ["Yalova", 40.65, 29.26], ["Kahramanmaraş", 37.57, 36.93], ["Gaziantep", 37.06, 37.38], ["Adana", 37.00, 35.32], ["Samsun", 41.28, 36.33], ["Bolu", 40.73, 31.60]];
+        noktalar.forEach(n => L.marker([n[1], n[2]]).addTo(map).bindPopup(n[0]));
+    </script>
+</body>
+</html>
