@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
     <title>Çalışma Ağım & Harita</title>
+    <style>
+        .leaflet-control-layers { background: rgba(15, 23, 42, 0.9) !important; color: #f1f5f9 !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 8px !important; padding: 5px; }
+        .leaflet-control-layers-expanded { font-family: 'Montserrat', sans-serif; font-size: 0.9em; }
+    </style>
 </head>
 <body>
     <nav>
@@ -24,72 +28,64 @@
         </ul>
 
         <h2>🗺️ Kişisel Ağım ve Bulunduğum İller</h2>
-        <p>Aşağıdaki haritada eğitim ve çalışma hayatımdaki kilit noktaları (ODTÜ, Hacettepe, Bakanlık) ve bulunduğum illeri görebilirsiniz.</p>
+        <p>Haritanın sağ üst köşesindeki menüyü kullanarak <strong>İş/Eğitim</strong> ve <strong>Seyahat</strong> haritaları arasında geçiş yapabilirsiniz.</p>
         <div id="map" style="height: 550px;"></div>
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Haritayı Ankara merkezli başlatıyoruz
         var map = L.map('map').setView([39.9, 32.8], 6);
         
-        // Koyu tasarıma özel Dark Mode harita altlığı
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }).addTo(map);
+
+        var isKatmani = L.featureGroup().addTo(map);      
+        var seyahatKatmani = L.featureGroup().addTo(map); 
         
-        // ÖZEL NOKTALAR (Eğitim ve İş - Personal Network Map Konsepti)
         var ozelNoktalar = [
             { ad: "ODTÜ (Lisans Eğitimi)", lat: 39.8914, lon: 32.7846, ikon: "🎓" },
             { ad: "Hacettepe Üni. (Yüksek Lisans)", lat: 39.8686, lon: 32.7344, ikon: "🎓" },
-            { ad: "Çevre, Şehircilik ve İklim Değişikliği Bakanlığı (İş)", lat: 39.9084, lon: 32.7661, ikon: "🏢" }
+            { ad: "Çevre ve Şehircilik Bakanlığı (İş)", lat: 39.9084, lon: 32.7661, ikon: "🏢" }
         ];
 
         ozelNoktalar.forEach(function(nokta) {
-            L.marker([nokta.lat, nokta.lon]).addTo(map)
-             .bindPopup("<b style='color:#0f172a; font-size: 14px;'>" + nokta.ikon + " " + nokta.ad + "</b>");
+            L.marker([nokta.lat, nokta.lon])
+             .bindPopup("<b style='color:#0f172a;'>" + nokta.ikon + " " + nokta.ad + "</b>")
+             .addTo(isKatmani);
         });
 
-        // BULUNULAN İLLER (GeoJSON Poligonları)
-        var bulundugumIller = [
-            "İstanbul", "Erzurum", "İzmir", "Manisa", "Antalya", 
-            "Ankara", "Çanakkale", "Nevşehir", "Bursa", "Kastamonu", 
-            "Ardahan", "Kars", "Ordu", "Bartın", "Karabük", "Yalova", 
-            "Kahramanmaraş", "Gaziantep", "Adana", "Samsun", "Bolu", 
-            "Sinop", "Çankırı", "Düzce", "Zonguldak"
-        ];
+        var isIlleri = ["Ankara", "Çanakkale", "Nevşehir", "Bursa", "Kastamonu", "Ardahan", "Kars", "Ordu", "Bartın", "Karabük", "Yalova", "Kahramanmaraş", "Gaziantep", "Adana", "Samsun", "Bolu", "Sinop", "Çankırı", "Düzce", "Zonguldak"];
+        var seyahatIlleri = ["İstanbul", "Erzurum", "İzmir", "Manisa", "Antalya"];
 
         fetch('https://raw.githubusercontent.com/alpers/Turkey-Maps-GeoJSON/master/tr-cities.json')
             .then(response => response.json())
             .then(data => {
+                
                 L.geoJSON(data, {
-                    style: function(feature) {
-                        var ilAdi = feature.properties.name;
-                        if(bulundugumIller.includes(ilAdi)) {
-                            return { color: "#38bdf8", weight: 2, fillColor: "#0ea5e9", fillOpacity: 0.3 };
-                        } else {
-                            return { color: "#475569", weight: 1, fillColor: "transparent", fillOpacity: 0 };
-                        }
-                    },
+                    filter: function(feature) { return isIlleri.includes(feature.properties.name); },
+                    style: { color: "#38bdf8", weight: 2, fillColor: "#0ea5e9", fillOpacity: 0.3 },
                     onEachFeature: function(feature, layer) {
-                        var ilAdi = feature.properties.name;
-                        if(bulundugumIller.includes(ilAdi)) {
-                            layer.bindPopup("<b style='color:#0f172a'>" + ilAdi + "</b>");
-                        }
+                        layer.bindPopup("<b style='color:#0f172a'>" + feature.properties.name + " (İş/Eğitim)</b>");
                     }
-                }).addTo(map);
+                }).addTo(isKatmani);
+
+                L.geoJSON(data, {
+                    filter: function(feature) { return seyahatIlleri.includes(feature.properties.name); },
+                    style: { color: "#a855f7", weight: 2, fillColor: "#c084fc", fillOpacity: 0.3 },
+                    onEachFeature: function(feature, layer) {
+                        layer.bindPopup("<b style='color:#0f172a'>" + feature.properties.name + " (Seyahat)</b>");
+                    }
+                }).addTo(seyahatKatmani);
             });
 
-        // Harita Lejantı
-        var legend = L.control({position: 'bottomright'});
-        legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML += '<h4>Harita Göstergesi</h4>';
-            div.innerHTML += '<i style="background: #0ea5e9; opacity: 0.5;"></i> Bulunulan İller<br>';
-            div.innerHTML += '<i style="background: white; border: 2px solid #38bdf8; border-radius: 50%; width: 12px; height: 12px; display: inline-block; margin-right: 12px; margin-top: 5px;"></i> Kurum / Eğitim<br>';
-            return div;
+        var overlayMaps = {
+            "💼 İş ve Eğitim Ağım": isKatmani,
+            "✈️ Seyahat Edilen İller": seyahatKatmani
         };
-        legend.addTo(map);
+
+        L.control.layers(null, overlayMaps, {collapsed: false}).addTo(map);
+        
     </script>
 </body>
 </html>
